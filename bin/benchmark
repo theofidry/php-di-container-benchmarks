@@ -2,7 +2,7 @@
 <?php
 declare(strict_types=1);
 
-require "/code/app/bootstrap.php";
+require __DIR__."/../app/bootstrap.php";
 
 use DiContainerBenchmarks\Benchmark\Benchmark;
 use DiContainerBenchmarks\Container\Dice\DiceContainer;
@@ -26,17 +26,17 @@ $testSuites = [
 ];
 
 $containers = [
-    new DiceContainer(),
-    new LaravelContainer(),
-    new PhpDiContainer(),
-    new PimpleContainer(),
+//    new DiceContainer(),
+//    new LaravelContainer(),
+//    new PhpDiContainer(),
+//    new PimpleContainer(),
     new SymfonyContainer(),
-    new ZenContainer(),
-    new ZendServiceManagerContainer(),
+//    new ZenContainer(),
+//    new ZendServiceManagerContainer(),
 ];
 
 $outputters = [
-    new HtmlOutputter("/code/var/benchmark.html"),
+    new HtmlOutputter(__DIR__."/../benchmark.html"),
 ];
 
 $benchmark = new Benchmark();

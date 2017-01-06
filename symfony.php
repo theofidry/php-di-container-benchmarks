@@ -2,20 +2,21 @@
 
 declare(strict_types = 1);
 
-use DiContainerBenchmarks\Container\Symfony\Resource\CompiledPrototypeContainer;
 use DiContainerBenchmarks\Container\Symfony\Resource\CompiledSingletonContainer;
+use DiContainerBenchmarks\Container\Symfony\Resource\CompiledSingletonContainer1;
+use DiContainerBenchmarks\Container\Symfony\Resource\CompiledSingletonContainer2;
 use DiContainerBenchmarks\Fixture\Class100;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 
 require __DIR__.'/vendor/autoload.php';
 
-build();
+//build();
 
-profile('Testsuite #2', CompiledPrototypeContainer::class);
-profile('Testsuite #4', CompiledSingletonContainer::class);
+profile('Container #0', CompiledSingletonContainer::class);
+profile('Container #1', CompiledSingletonContainer1::class);
+profile('Container #2', CompiledSingletonContainer2::class);
 
 
 function profile(string $title, string $containerClass)
@@ -24,14 +25,14 @@ function profile(string $title, string $containerClass)
 
     $config = new \Blackfire\Profile\Configuration();
     $config->setTitle($title);
-    $config->setSamples(100);
+    $config->setSamples(10000);
     $config->setReference(0);
 
     $probe = $blackfire->createProbe($config, false);
     for ($i = 1; $i <= $config->getSamples(); $i++) {
         $probe->enable();
 
-        $container = new $containerClass();
+        $congtainer = new $containerClass();
         $container->get(Class100::class);
 
         $probe->close();

@@ -25,7 +25,7 @@ class Benchmark
             $container->build();
         }
 
-        exec("composer dump-autoload --working-dir=/code --classmap-authoritative");
+        exec("composer dump-autoload --working-dir=".__DIR__."/../../"." --classmap-authoritative");
 
         foreach ($testSuites as $testSuite) {
             foreach ($testSuite->getTestCases() as $testCase) {
@@ -50,6 +50,22 @@ class Benchmark
         ContainerInterface $container,
         BenchmarkResult $benchmarkResult
     ): void {
+        $blackfire = new \Blackfire\Client();
+        $config = new \Blackfire\Profile\Configuration();
+        $config->setTitle('Test 2');
+        $config->setSamples(10);
+        $config->setReference(0);
+        $probe = $blackfire->createProbe($config, false);
+        for ($i = 1; $i <= $config->getSamples(); $i++) {
+            $probe->enable();
+            script($faker);
+            $probe->close();
+            $progressBar->advance();
+        }
+        $blackfire->endProbe($probe);
+
+
+
         for ($run = 0; $run < 10; $run++) {
             echo "Running test " . $testSuite->getNumber() . "." . $testCase->getNumber() .
                 " (" . $container->getName() . '): ' . ($run+1) . "/10\n";
@@ -58,7 +74,7 @@ class Benchmark
             $containerName = $container->getName();
             $iterations = $testCase->getIterations();
             $isStartupTimeIncluded = (int) $testCase->isStartupTimeIncluded();
-            exec("/code/bin/test $number $containerName $iterations $isStartupTimeIncluded", $output, $code);
+            exec(__DIR__."/../../bin/test $number $containerName $iterations $isStartupTimeIncluded", $output, $code);
 
             if ($code !== 0) {
                 echo "Test failed:\n";
